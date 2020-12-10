@@ -12,14 +12,15 @@ export class HolyCalendarComponent implements OnInit {
   today = new Date();
   currentMonth = this.today.getMonth();
   currentYear = this.today.getFullYear();
-
-
   months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+  lines = Array.from(Array(6).keys());
+  days = Array.from(Array(7).keys());
 
   ngOnInit(): void {
     this.showCalendar(this.currentMonth, this.currentYear);
   }
-
 
   next() {
     this.currentYear = (this.currentMonth === 11) ? this.currentYear + 1 : this.currentYear;
@@ -39,7 +40,7 @@ export class HolyCalendarComponent implements OnInit {
     this.showCalendar(this.currentMonth, this.currentYear);
   }
 
-  showCalendar(month, year) {
+  showCalendar(month: number, year: number) {
 
     let firstDay = (new Date(year, month)).getDay();
 
@@ -67,9 +68,7 @@ export class HolyCalendarComponent implements OnInit {
         }
         else if (date > this.daysInMonth(month, year)) {
           break;
-        }
-
-        else {
+        } else {
           const cell = document.createElement("td");
           const cellText = document.createTextNode(date.toString());
           if (date === this.today.getDate() && year === this.today.getFullYear() && month === this.today.getMonth()) {
@@ -79,7 +78,6 @@ export class HolyCalendarComponent implements OnInit {
           row.appendChild(cell);
           date++;
         }
-
 
       }
 
