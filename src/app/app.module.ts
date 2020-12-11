@@ -10,13 +10,25 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { HandleCalendarComponent } from './handle-calendar/handle-calendar.component';
 import { HolyCalendarComponent } from './holy-calendar/holy-calendar.component';
+import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
+import interactionPlugin from '@fullcalendar/interaction';
+import { CalendarjsComponent } from './calendarjs/calendarjs.component'; // a plugin
+import timeGridPlugin from '@fullcalendar/timegrid';
+
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin,
+  timeGridPlugin,
+  interactionPlugin
+]);
 
 @NgModule({
   declarations: [
     AppComponent,
     CalendarComponent,
     HandleCalendarComponent,
-    HolyCalendarComponent
+    HolyCalendarComponent,
+    CalendarjsComponent
   ],
   imports: [
     BrowserModule,
@@ -25,6 +37,7 @@ import { HolyCalendarComponent } from './holy-calendar/holy-calendar.component';
     FormsModule,
     ReactiveFormsModule,
     NgbModalModule,
+    FullCalendarModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory })
   ],
   providers: [],

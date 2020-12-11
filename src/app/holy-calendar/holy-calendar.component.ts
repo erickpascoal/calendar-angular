@@ -16,8 +16,8 @@ export class HolyCalendarComponent implements OnInit {
   formGroup: FormGroup;
 
   today = new Date();
-  currentMonth = this.today.getMonth();
-  currentYear = this.today.getFullYear();
+  currentMonth: number = this.today.getMonth();
+  currentYear: number = this.today.getFullYear();
   months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   lines: Line[] = [];
 
@@ -47,8 +47,8 @@ export class HolyCalendarComponent implements OnInit {
   }
 
   jump() {
-    this.currentMonth = this.formGroup.get('selectMounth').value;
-    this.currentYear = this.formGroup.get('selectYear').value;
+    this.currentMonth = +this.formGroup.get('selectMounth').value;
+    this.currentYear = +this.formGroup.get('selectYear').value;
     this.showCalendar(this.currentMonth, this.currentYear);
   }
 
@@ -80,7 +80,7 @@ export class HolyCalendarComponent implements OnInit {
   }
 
   isToday(day: number) {
-    if (day === this.today.getDate() && this.currentYear === this.today.getFullYear() && this.currentMonth === this.today.getMonth()) {
+    if (day === this.today.getDate() && this.currentYear == this.today.getFullYear() && this.currentMonth == this.today.getMonth()) {
       return true;
     }
     return false;
