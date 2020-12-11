@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Line } from './line';
 
 @Component({
   selector: 'app-holy-calendar',
@@ -7,18 +9,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HolyCalendarComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private formBuilder: FormBuilder
+  ) { }
+
+  formGroup: FormGroup;
 
   today = new Date();
   currentMonth = this.today.getMonth();
   currentYear = this.today.getFullYear();
-  months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  lines: Line[] = [];
 
-
-  lines = Array.from(Array(6).keys());
-  days = Array.from(Array(7).keys());
 
   ngOnInit(): void {
+    this.buildForm();
+    this.showCalendar(this.currentMonth, this.currentYear);
+  }
+
+  buildForm() {
+    this.formGroup = this.formBuilder.group({
+      selectMounth: [this.currentMonth],
+      selectYear: [this.currentYear],
+    });
+  }
+
+  previous() {
+    this.currentYear = (this.currentMonth === 0) ? this.currentYear - 1 : this.currentYear;
+    this.currentMonth = (this.currentMonth === 0) ? 11 : this.currentMonth - 1;
     this.showCalendar(this.currentMonth, this.currentYear);
   }
 
@@ -28,67 +46,47 @@ export class HolyCalendarComponent implements OnInit {
     this.showCalendar(this.currentMonth, this.currentYear);
   }
 
-  previous() {
-    this.currentYear = (this.currentMonth === 0) ? this.currentYear - 1 : this.currentYear;
-    this.currentMonth = (this.currentMonth === 0) ? 11 : this.currentMonth - 1;
-    this.showCalendar(this.currentMonth, this.currentYear);
-  }
-
   jump() {
-    this.currentYear = parseInt((<any>document.getElementById("year")).value);
-    this.currentMonth = parseInt((<any>document.getElementById("month")).value);
+    this.currentMonth = this.formGroup.get('selectMounth').value;
+    this.currentYear = this.formGroup.get('selectYear').value;
     this.showCalendar(this.currentMonth, this.currentYear);
   }
 
   showCalendar(month: number, year: number) {
+    this.formGroup.get('selectMounth').setValue(month)
+    this.formGroup.get('selectYear').setValue(year)
+    this.lines = [];
 
     let firstDay = (new Date(year, month)).getDay();
 
-    // clearing all previous cells
-    document.getElementById("calendar-body").innerHTML = "";
-
-    // filing data about month and in the page via DOM.
-    document.getElementById('monthAndYear').innerHTML = this.months[month] + " " + year;
-    (<any>document.getElementById("year")).value = year;
-    (<any>document.getElementById("month")).value = month;
-
-    // creating all cells
     let date = 1;
     for (let i = 0; i < 6; i++) {
-      // creates a table row
-      let row = document.createElement("tr");
+      this.lines.push(new Line());
 
-      //creating individual cells, filing them up with data.
       for (let j = 0; j < 7; j++) {
+
         if (i === 0 && j < firstDay) {
-          var cell = document.createElement("td");
-          var cellText = document.createTextNode("");
-          cell.appendChild(cellText);
-          row.appendChild(cell);
-        }
-        else if (date > this.daysInMonth(month, year)) {
+          this.lines[i].days.push(null);
+        } else if (date > this.daysInMonth(month, year)) {
           break;
         } else {
-          const cell = document.createElement("td");
-          const cellText = document.createTextNode(date.toString());
-          if (date === this.today.getDate() && year === this.today.getFullYear() && month === this.today.getMonth()) {
-            cell.classList.add("bg-info");
-          } // color today's date
-          cell.appendChild(cellText);
-          row.appendChild(cell);
+          this.lines[i].days.push(date);
           date++;
         }
 
       }
-
-      document.getElementById("calendar-body").appendChild(row); // appending each row into calendar body.
     }
 
   }
 
+  isToday(day: number) {
+    if (day === this.today.getDate() && this.currentYear === this.today.getFullYear() && this.currentMonth === this.today.getMonth()) {
+      return true;
+    }
+    return false;
+  }
 
-  // check how many days in a month code from https://dzone.com/articles/determining-number-days-month
-  daysInMonth(iMonth, iYear) {
-    return 32 - new Date(iYear, iMonth, 32).getDate();
+  daysInMonth(mounth: number, year: number) {
+    return 32 - new Date(year, mounth, 32).getDate();
   }
 }

@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarComponent } from './calendar/calendar.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { HandleCalendarComponent } from './handle-calendar/handle-calendar.component';
@@ -23,6 +23,7 @@ import { HolyCalendarComponent } from './holy-calendar/holy-calendar.component';
     CommonModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     NgbModalModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory })
   ],
