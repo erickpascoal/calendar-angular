@@ -11,6 +11,8 @@ export class CalendarjsComponent implements OnInit {
 
   currentEvents: EventApi[] = [];
 
+  events: any[] = [];
+
   calendarVisible = true;
   calendarOptions: CalendarOptions = {
     headerToolbar: {
@@ -19,7 +21,7 @@ export class CalendarjsComponent implements OnInit {
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
     initialView: 'dayGridMonth',
-    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+    // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
     weekends: true,
     editable: true,
     selectable: true,
@@ -27,7 +29,8 @@ export class CalendarjsComponent implements OnInit {
     dayMaxEvents: true,
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this)
+    eventsSet: this.handleEvents.bind(this),
+    events: this.events
     /* you can update a remote database when these fire:
     eventAdd:
     eventChange:
@@ -35,11 +38,23 @@ export class CalendarjsComponent implements OnInit {
     */
   };
 
-
   ngOnInit(): void {
+    this.loadingEvents();
   }
 
 
+  loadingEvents() {
+    setTimeout(() => {
+      console.log('baixou');
+
+      this.events = [
+        { title: 'event 1', start: '2020-12-11T08:30:00-03:00', end: '2020-12-11T09:30:00-03:00' },
+        { title: 'event 2', start: '2020-12-12T08:30:00-03:00', end: '2020-12-12T09:30:00-03:00' }
+      ]
+
+      this.calendarOptions.events = this.events;
+    }, 3000);
+  }
 
   handleCalendarToggle() {
     this.calendarVisible = !this.calendarVisible;
@@ -51,12 +66,13 @@ export class CalendarjsComponent implements OnInit {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
+    const title = prompt('Digite o nome do novo envento');
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
 
     if (title) {
+
       calendarApi.addEvent({
         id: createEventId(),
         title,
@@ -68,13 +84,16 @@ export class CalendarjsComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+    if (confirm(`Deseja mesmo deletar '${clickInfo.event.title}'`)) {
       clickInfo.event.remove();
     }
   }
 
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
+
+    console.log('this.currentEvents', this.currentEvents);
+
   }
 
 }
